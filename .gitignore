@@ -25,5 +25,4 @@ build/
 *.log
 
 # Archivos de configuración
-config.js
 config.production.js 
