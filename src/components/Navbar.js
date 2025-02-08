@@ -1,3 +1,5 @@
+import { OfflineStorage } from '../utils/OfflineStorage.js';
+
 export class Navbar {
     constructor() {
         this.navToggle = document.querySelector('.nav-toggle');
@@ -42,6 +44,9 @@ export class Navbar {
         const landingPage = document.querySelector('.landing-page');
         const mainContent = document.querySelector('.main-content');
         const offlineContent = document.querySelector('.offline-content');
+        
+        // Limpiar selecciones antes de cambiar de vista
+        OfflineStorage.cancelSelection();
         
         // Ocultar todas las vistas
         landingPage.style.display = 'none';

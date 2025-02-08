@@ -16,6 +16,8 @@ export class OfflineStorage {
 
     static addToPendingDeletions(boulderId) {
         this.pendingDeletions.add(boulderId);
+        const confirmButton = document.getElementById('confirm-changes');
+        confirmButton.classList.add('visible', 'delete-mode');
         this.updatePendingUI();
     }
 
@@ -32,13 +34,23 @@ export class OfflineStorage {
         }
     }
 
+    static togglePendingSave(boulder) {
+        if (this.pendingChanges.has(boulder.id)) {
+            this.removeFromPending(boulder.id);
+        } else {
+            this.addToPending(boulder);
+        }
+    }
+
     static updatePendingUI() {
         const confirmButton = document.getElementById('confirm-changes');
+        const cancelButton = document.getElementById('cancel-selection');
         const counter = confirmButton.querySelector('.counter');
         const count = this.pendingChanges.size + this.pendingDeletions.size;
         
         counter.textContent = count;
         confirmButton.classList.toggle('visible', count > 0);
+        cancelButton.classList.toggle('visible', count > 0);
 
         if (this.pendingDeletions.size > 0) {
             confirmButton.innerHTML = `
@@ -47,13 +59,19 @@ export class OfflineStorage {
                 <span>Eliminar seleccionados</span>
             `;
             confirmButton.classList.add('delete-mode');
-        } else {
+            confirmButton.classList.remove('save-mode');
+        } else if (this.pendingChanges.size > 0) {
             confirmButton.innerHTML = `
                 <span class="counter">${this.pendingChanges.size}</span>
                 <i class="fas fa-save"></i>
-                <span>Confirmar cambios</span>
+                <span>Guardar seleccionados</span>
             `;
+            confirmButton.classList.add('save-mode');
             confirmButton.classList.remove('delete-mode');
+        } else {
+            confirmButton.classList.remove('save-mode', 'delete-mode');
+            document.body.classList.remove('save-mode', 'deletion-mode');
+            document.querySelector('.main-content')?.classList.remove('deletion-mode');
         }
 
         // Actualizar visual de las tarjetas
@@ -61,12 +79,22 @@ export class OfflineStorage {
             const boulderId = card.dataset.boulderId;
             if (this.pendingDeletions.has(boulderId)) {
                 card.classList.add('selected-for-deletion');
+                card.classList.remove('selected-for-offline');
             } else if (this.pendingChanges.has(boulderId)) {
                 card.classList.add('selected-for-offline');
+                card.classList.remove('selected-for-deletion');
             } else {
                 card.classList.remove('selected-for-offline', 'selected-for-deletion');
             }
         });
+    }
+
+    static cancelSelection() {
+        this.pendingChanges.clear();
+        this.pendingDeletions.clear();
+        document.body.classList.remove('save-mode', 'deletion-mode');
+        document.querySelector('.main-content')?.classList.remove('deletion-mode');
+        this.updatePendingUI();
     }
 
     static async confirmChanges() {
@@ -93,6 +121,7 @@ export class OfflineStorage {
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedBoulders));
             this.pendingChanges.clear();
             this.updatePendingUI();
+            document.body.classList.remove('save-mode');
 
             await new Promise(resolve => setTimeout(resolve, 800));
             window.location.reload();
@@ -119,6 +148,7 @@ export class OfflineStorage {
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedBoulders));
             this.pendingDeletions.clear();
             this.updatePendingUI();
+            document.body.classList.remove('deletion-mode');
 
             await new Promise(resolve => setTimeout(resolve, 800));
             window.location.reload();
@@ -131,7 +161,6 @@ export class OfflineStorage {
     }
 
     static findBoulderById(boulderId) {
-        // Buscar en el DOM el boulder actual
         const card = document.querySelector(`.boulder-card[data-boulder-id="${boulderId}"]`);
         if (card && card.__boulder) {
             return card.__boulder;

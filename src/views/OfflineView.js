@@ -76,4 +76,21 @@ export class OfflineView {
             BoulderCard.showDetails(boulder);
         }
     }
+
+    static handleDeleteFromModal(boulderId) {
+        const modal = document.getElementById('boulder-modal');
+        const offlineContainer = document.getElementById('offline-container');
+        
+        modal.style.display = 'none';
+        offlineContainer.classList.add('selection-mode');
+        
+        // Actualizar el botón de selección
+        const selectionBtn = document.getElementById('selection-mode-btn');
+        selectionBtn.innerHTML = '<i class="fas fa-check"></i> Terminar selección';
+        selectionBtn.classList.remove('btn-danger');
+        selectionBtn.classList.add('btn-secondary');
+        
+        // Agregar el boulder a la selección
+        OfflineStorage.addToPendingDeletions(boulderId);
+    }
 } 

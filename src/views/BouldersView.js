@@ -1,4 +1,5 @@
 import { BoulderCard } from '../components/BoulderCard.js';
+import { OfflineStorage } from '../utils/OfflineStorage.js';
 
 export class BouldersView {
     constructor(db) {
@@ -29,6 +30,24 @@ export class BouldersView {
                 this.modal.style.display = 'none';
             }
         });
+    }
+
+    handleBoulderClick(boulder) {
+        // Verificar si estamos en modo eliminación
+        const isInDeletionMode = document.body.classList.contains('deletion-mode') || 
+                                document.querySelector('.main-content').classList.contains('deletion-mode');
+        
+        if (isInDeletionMode) {
+            // Si el boulder está guardado, permitir su selección para eliminar
+            if (OfflineStorage.isBoulderSaved(boulder.id)) {
+                OfflineStorage.togglePendingDeletion(boulder.id);
+            }
+            return; // Importante: retornar aquí para evitar abrir el modal
+        } else if (document.body.classList.contains('save-mode')) {
+            OfflineStorage.togglePendingSave(boulder);
+        } else {
+            BoulderCard.showDetails(boulder);
+        }
     }
 
     async loadSectors() {
@@ -96,7 +115,7 @@ export class BouldersView {
         }
 
         filteredBoulders.forEach(boulder => {
-            const boulderCard = new BoulderCard(boulder, (b) => BoulderCard.showDetails(b));
+            const boulderCard = new BoulderCard(boulder, (b) => this.handleBoulderClick(b));
             this.bouldersContainer.appendChild(boulderCard.render());
         });
     }

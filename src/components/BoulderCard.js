@@ -1,4 +1,5 @@
 import { OfflineStorage } from '../utils/OfflineStorage.js';
+import { OfflineView } from '../views/OfflineView.js';
 
 export class BoulderCard {
     constructor(boulder, onClickCallback) {
@@ -9,6 +10,9 @@ export class BoulderCard {
     render() {
         const div = document.createElement('div');
         div.className = 'boulder-card';
+        if (OfflineStorage.isBoulderSaved(this.boulder.id)) {
+            div.classList.add('saved');
+        }
         div.dataset.boulderId = this.boulder.id;
         div.__boulder = this.boulder; // Guardar referencia al objeto boulder
         
@@ -30,6 +34,7 @@ export class BoulderCard {
         const coordsString = `${boulder.latitud},${boulder.longitud}`;
         const googleMapsUrl = `https://www.google.com/maps?q=${boulder.latitud},${boulder.longitud}`;
         const isSaved = OfflineStorage.isBoulderSaved(boulder.id);
+        const isOfflineView = document.querySelector('.offline-content').style.display === 'block';
         
         modalContent.innerHTML = `
             <div class="boulder-detail">
@@ -49,10 +54,17 @@ export class BoulderCard {
                     </div>
                 </div>
                 <div class="offline-actions">
-                    <button class="btn ${isSaved ? 'btn-danger' : 'btn-primary'}" onclick="toggleSaveBoulder('${boulder.id}')">
-                        <i class="fas ${isSaved ? 'fa-trash' : 'fa-save'}"></i>
-                        ${isSaved ? 'Eliminar de Guardados' : 'Guardar para Offline'}
-                    </button>
+                    ${isOfflineView ? `
+                        <button class="btn btn-danger" onclick="toggleSaveBoulder('${boulder.id}')">
+                            <i class="fas fa-trash"></i>
+                            Eliminar de Guardados
+                        </button>
+                    ` : `
+                        <button class="btn btn-primary" onclick="toggleSaveBoulder('${boulder.id}')">
+                            <i class="fas fa-save"></i>
+                            Guardar para Offline
+                        </button>
+                    `}
                 </div>
             </div>
         `;
@@ -60,16 +72,14 @@ export class BoulderCard {
 
         // Definir las funciones globales para los botones
         window.toggleSaveBoulder = (boulderId) => {
-            if (OfflineStorage.isBoulderSaved(boulderId)) {
-                modal.style.display = 'none';
-                // Activar modo selección y agregar el boulder actual
-                const offlineContainer = document.getElementById('offline-container');
-                offlineContainer.classList.add('selection-mode');
-                OfflineStorage.addToPendingDeletions(boulderId);
+            if (isOfflineView) {
+                // En vista offline, manejar eliminación
+                OfflineView.handleDeleteFromModal(boulderId);
             } else {
-                if (OfflineStorage.saveBoulder(boulder)) {
-                    modal.style.display = 'none';
-                }
+                // En vista boulders, solo guardar
+                modal.style.display = 'none';
+                document.body.classList.add('save-mode');
+                OfflineStorage.saveBoulder(boulder);
             }
         };
 

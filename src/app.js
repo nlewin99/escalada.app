@@ -27,6 +27,12 @@ class App {
         confirmButton.addEventListener('click', () => {
             OfflineStorage.confirmChanges();
         });
+
+        // Inicializar botón de cancelar selección
+        const cancelButton = document.getElementById('cancel-selection');
+        cancelButton.addEventListener('click', () => {
+            OfflineStorage.cancelSelection();
+        });
     }
 }
 

@@ -698,4 +698,55 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+/* Estado de boulder guardado */
+.boulder-card.saved {
+    position: relative;
+}
+
+.boulder-card.saved::after {
+    content: '✓';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--color-white);
+    color: var(--color-black);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border: 2px solid var(--color-black);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Botón de cancelar selección */
+.cancel-selection {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    background-color: var(--color-gray);
+    color: var(--color-white);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+.cancel-selection.visible {
+    display: flex;
+    animation: slideIn 0.3s ease;
+}
+
+.cancel-selection:hover {
+    background-color: var(--color-dark-gray);
+    transform: translateY(-2px);
 } 
