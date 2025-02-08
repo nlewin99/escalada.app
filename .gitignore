@@ -22,4 +22,8 @@ yarn-error.log
 # Archivos de compilación
 dist/
 build/
-*.log 
+*.log
+
+# Archivos de configuración
+config.js
+config.production.js 
