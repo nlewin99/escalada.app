@@ -3,6 +3,7 @@ import { Navbar } from './components/Navbar.js';
 import { LandingView } from './views/LandingView.js';
 import { BouldersView } from './views/BouldersView.js';
 import { OfflineView } from './views/OfflineView.js';
+import { OfflineStorage } from './utils/OfflineStorage.js';
 
 class App {
     constructor() {
@@ -20,6 +21,12 @@ class App {
         this.bouldersView = new BouldersView(this.db);
         this.offlineView = new OfflineView();
         this.offlineView.init();
+
+        // Inicializar botón de confirmación
+        const confirmButton = document.getElementById('confirm-changes');
+        confirmButton.addEventListener('click', () => {
+            OfflineStorage.confirmChanges();
+        });
     }
 }
 

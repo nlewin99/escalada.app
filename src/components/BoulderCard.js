@@ -9,6 +9,8 @@ export class BoulderCard {
     render() {
         const div = document.createElement('div');
         div.className = 'boulder-card';
+        div.dataset.boulderId = this.boulder.id;
+        div.__boulder = this.boulder; // Guardar referencia al objeto boulder
         
         div.innerHTML = `
             <img src="${this.boulder.imagenUrl}" alt="${this.boulder.nombre}">
@@ -59,15 +61,16 @@ export class BoulderCard {
         // Definir las funciones globales para los botones
         window.toggleSaveBoulder = (boulderId) => {
             if (OfflineStorage.isBoulderSaved(boulderId)) {
-                if (OfflineStorage.removeBoulder(boulderId)) {
-                    alert('Boulder eliminado de guardados');
-                }
+                modal.style.display = 'none';
+                // Activar modo selección y agregar el boulder actual
+                const offlineContainer = document.getElementById('offline-container');
+                offlineContainer.classList.add('selection-mode');
+                OfflineStorage.addToPendingDeletions(boulderId);
             } else {
                 if (OfflineStorage.saveBoulder(boulder)) {
-                    alert('Boulder guardado correctamente');
+                    modal.style.display = 'none';
                 }
             }
-            BoulderCard.showDetails(boulder); // Actualizar la vista
         };
 
         window.copyCoords = this.copyCoords;

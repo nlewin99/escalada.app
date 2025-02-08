@@ -5,6 +5,7 @@
     --color-gray: #666666;
     --color-light-gray: #E5E5E5;
     --color-white: #FFFFFF;
+    --color-danger: #dc3545;
     
     /* Fondos y textos */
     --bg-primary: var(--color-white);
@@ -556,4 +557,145 @@ body {
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+}
+
+/* Estilos para el botón flotante de confirmación */
+.floating-confirm {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: var(--color-black);
+    color: var(--color-white);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+.floating-confirm.delete-mode {
+    background-color: var(--color-danger);
+}
+
+.floating-confirm.delete-mode:hover {
+    background-color: #c82333;
+}
+
+.floating-confirm.visible {
+    display: flex;
+    animation: slideIn 0.3s ease;
+}
+
+.floating-confirm:hover {
+    background-color: var(--color-dark-gray);
+    transform: translateY(-2px);
+}
+
+.floating-confirm .counter {
+    background-color: var(--color-white);
+    color: var(--color-black);
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Estado de boulder seleccionado */
+.boulder-card.selected-for-offline {
+    position: relative;
+    border: 2px solid var(--color-black);
+}
+
+.boulder-card.selected-for-offline::after {
+    content: '✓';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--color-black);
+    color: var(--color-white);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+/* Estado de boulder seleccionado para eliminar */
+.boulder-card.selected-for-deletion {
+    position: relative;
+    border: 2px solid var(--color-danger);
+    opacity: 0.8;
+}
+
+.boulder-card.selected-for-deletion::after {
+    content: '×';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--color-danger);
+    color: var(--color-white);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Animación para el botón flotante */
+@keyframes slideIn {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Animación de carga */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.loading-overlay.visible {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--color-light-gray);
+    border-top: 3px solid var(--color-black);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 } 
