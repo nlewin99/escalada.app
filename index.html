@@ -9,12 +9,29 @@
 <body>
     <div class="container">
         <h1>Boulders de Escalada</h1>
+        
+        <!-- Selector de sectores -->
+        <div class="sector-selector">
+            <label for="sector-select">Selecciona un sector:</label>
+            <select id="sector-select">
+                <option value="">Todos los sectores</option>
+            </select>
+        </div>
+
         <div id="boulders-container" class="boulders-grid"></div>
     </div>
 
+    <!-- Modal para detalles -->
+    <div id="boulder-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="boulder-detail-content"></div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="app.js"></script>
 </body>
 </html> 
