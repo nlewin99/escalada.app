@@ -18,9 +18,9 @@ const modal = document.getElementById('boulder-modal');
 const modalContent = document.getElementById('boulder-detail-content');
 const closeButton = document.querySelector('.close-button');
 const sectorSelect = document.getElementById('sector-select');
-const hamburgerMenu = document.querySelector('.hamburger-menu');
-const menuItems = document.querySelector('.menu-items');
-const menuLinks = document.querySelectorAll('.menu-item');
+const navToggle = document.querySelector('.nav-toggle');
+const navLinks = document.querySelector('.nav-links');
+const navItems = document.querySelectorAll('.nav-item');
 
 // Actualizar el array de imágenes para usar las locales
 const sliderImages = [
@@ -165,10 +165,34 @@ sectorSelect.addEventListener('change', (e) => {
 // Event Listeners
 document.getElementById('explore-button').addEventListener('click', showMainContent);
 
-// Función para manejar el menú hamburguesa
-function toggleMenu() {
-    menuItems.classList.toggle('active');
+// Función para manejar el menú responsive
+function toggleNav() {
+    navLinks.classList.toggle('active');
 }
+
+// Event Listeners para la navegación
+navToggle.addEventListener('click', toggleNav);
+
+navItems.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const view = e.target.dataset.view;
+        navigateToView(view);
+        if (window.innerWidth <= 768) {
+            toggleNav(); // Cerrar el menú en móviles después de hacer clic
+        }
+    });
+});
+
+// Cerrar el menú si se hace clic fuera de él
+document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768 && 
+        !e.target.closest('.nav-links') && 
+        !e.target.closest('.nav-toggle') && 
+        navLinks.classList.contains('active')) {
+        toggleNav();
+    }
+});
 
 // Función para navegar entre vistas
 function navigateToView(viewName) {
@@ -182,26 +206,7 @@ function navigateToView(viewName) {
             document.querySelector('.main-content').style.display = 'block';
             break;
     }
-    toggleMenu(); // Cerrar el menú después de navegar
 }
-
-// Event Listeners para el menú
-hamburgerMenu.addEventListener('click', toggleMenu);
-
-menuLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const view = e.target.dataset.view;
-        navigateToView(view);
-    });
-});
-
-// Cerrar el menú si se hace clic fuera de él
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav-menu') && menuItems.classList.contains('active')) {
-        toggleMenu();
-    }
-});
 
 // Modificar el inicializador de la página
 document.addEventListener('DOMContentLoaded', () => {
