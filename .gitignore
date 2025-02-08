@@ -1,5 +1,6 @@
 # Archivos de configuración
 config.js
+config.production.js
 
 # Archivos del sistema
 .DS_Store

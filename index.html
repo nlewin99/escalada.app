@@ -28,7 +28,7 @@
     <div class="landing-page">
         <div class="slider"></div>
         <div class="landing-content">
-            <h1>Informacion de escalada</h1>
+            <h1>Información de escalada</h1>
             <p>Actualmente solo Información de la Silla del Diablo</p>
             <button id="explore-button" class="btn">Explorar</button>
         </div>
@@ -97,7 +97,18 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <!-- Configuración -->
-    <script src="config.js"></script>
+    <script>
+        // Cargar la configuración
+        const configScript = document.createElement('script');
+        configScript.src = 'config.production.js';
+        configScript.onerror = () => {
+            console.warn('No se pudo cargar config.production.js, intentando con config.js');
+            const devConfig = document.createElement('script');
+            devConfig.src = 'config.js';
+            document.head.appendChild(devConfig);
+        };
+        document.head.appendChild(configScript);
+    </script>
     <!-- App -->
     <script src="app.js"></script>
 
