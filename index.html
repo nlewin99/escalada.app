@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boulders de Escalada</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Agregar Font Awesome para el ícono del menú -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-brand">
-            <a href="#" data-view="landing">CLIMB & CREATE</a>
+            <a href="#" data-view="landing">
+                <i class="fas fa-mountain"></i>
+            </a>
         </div>
         <div class="nav-links">
             <a href="#" class="nav-item" data-view="landing">Inicio</a>
@@ -28,7 +29,8 @@
         <div class="slider"></div>
         <div class="landing-content">
             <h1>Informacion de escalada</h1>
-            <button id="explore-button">Explorar!</button>
+            <p>Actualmente solo Información de la Silla del Diablo</p>
+            <button id="explore-button" class="btn">Explorar</button>
         </div>
     </div>
 
@@ -37,12 +39,46 @@
         <div class="container">
             <h1>Boulders de Escalada</h1>
             
-            <!-- Selector de sectores -->
-            <div class="sector-selector">
-                <label for="sector-select">Selecciona un sector:</label>
-                <select id="sector-select">
-                    <option value="">Todos los sectores</option>
-                </select>
+            <!-- Filtros y búsqueda -->
+            <div class="filters-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="boulder-search" placeholder="Buscar boulder...">
+                </div>
+                
+                <div class="filters">
+                    <div class="sector-selector">
+                        <label for="sector-select">Sector:</label>
+                        <select id="sector-select">
+                            <option value="">Todos los sectores</option>
+                        </select>
+                    </div>
+
+                    <div class="grade-selector">
+                        <label for="grade-select">Grado:</label>
+                        <select id="grade-select">
+                            <option value="">Todos los grados</option>
+                            <option value="V0">V0</option>
+                            <option value="V1">V1</option>
+                            <option value="V2">V2</option>
+                            <option value="V3">V3</option>
+                            <option value="V4">V4</option>
+                            <option value="V5">V5</option>
+                            <option value="V6">V6</option>
+                            <option value="V7">V7</option>
+                            <option value="V8">V8</option>
+                            <option value="V9">V9</option>
+                            <option value="V10">V10</option>
+                            <option value="V11">V11</option>
+                            <option value="V12">V12</option>
+                            <option value="V13">V13</option>
+                            <option value="V14">V14</option>
+                            <option value="V15">V15</option>
+                            <option value="V16">V16</option>
+                            <option value="V17">V17</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div id="boulders-container" class="boulders-grid"></div>
@@ -60,22 +96,27 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <!-- Configuración -->
+    <script src="config.js"></script>
+    <!-- App -->
     <script src="app.js"></script>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>CLIMB & CREATE</h3>
                 <p>Explorando y documentando los mejores lugares para escalar</p>
             </div>
             <div class="footer-section">
-                <p>&copy; 2024 CLIMB & CREATE</p>
+                <p>&copy; 2025 CLIMB & CREATE</p>
                 <p>Todos los derechos reservados</p>
             </div>
             <div class="footer-section">
-                <p>Creado con ❤️ por el equipo de</p>
-                <p>CLIMB & CREATE</p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@climbcreate1428" target="_blank" class="social-link">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>

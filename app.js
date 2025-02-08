@@ -1,16 +1,5 @@
-// Configuración de Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyAwvkbf4uyIx38YKPw6Pm0akIhbO12gx5Y",
-    authDomain: "appescalada-fdc62.firebaseapp.com",
-    projectId: "appescalada-fdc62",
-    storageBucket: "appescalada-fdc62.appspot.com",
-    messagingSenderId: "616040598687",
-    appId: "1:616040598687:web:c5c2afeb60522549cce6aa",
-    measurementId: "G-NYK0E4ZHTX"
-};
-
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
+// Inicializar Firebase usando la configuración externa
+firebase.initializeApp(window.appConfig.firebase);
 const db = firebase.firestore();
 
 // Referencias a elementos del DOM
@@ -18,17 +7,24 @@ const modal = document.getElementById('boulder-modal');
 const modalContent = document.getElementById('boulder-detail-content');
 const closeButton = document.querySelector('.close-button');
 const sectorSelect = document.getElementById('sector-select');
+const gradeSelect = document.getElementById('grade-select');
+const boulderSearch = document.getElementById('boulder-search');
 const navToggle = document.querySelector('.nav-toggle');
 const navLinks = document.querySelector('.nav-links');
 const navItems = document.querySelectorAll('.nav-item');
 
 // Actualizar el array de imágenes para usar las locales
 const sliderImages = [
-    'img/1_bn.jpg',
-    'img/2_bn.jpg'
+    'img/1.jpeg',
+    'img/2.jpeg',
+    'img/3.jpeg',
 ];
 
+
 let currentImageIndex = 0;
+
+// Variables para almacenar los boulders
+let allBoulders = [];
 
 // Función mejorada para el slider
 function initializeSlider() {
@@ -89,30 +85,54 @@ async function loadBoulders(sectorId = '') {
     bouldersContainer.innerHTML = '';
     
     try {
-        console.log('Cargando boulders...', sectorId ? `para el sector: ${sectorId}` : 'todos los sectores');
         let query = db.collection('boulders');
         if (sectorId) {
             query = query.where('sectorId', '==', sectorId);
         }
         
         const snapshot = await query.get();
-        console.log('Boulders encontrados:', snapshot.size);
         
         if (snapshot.empty) {
             bouldersContainer.innerHTML = '<p>No se encontraron boulders para mostrar.</p>';
             return;
         }
 
+        allBoulders = [];
         snapshot.forEach(doc => {
             const boulder = { id: doc.id, ...doc.data() };
-            console.log('Boulder cargado:', boulder.nombre);
-            const boulderElement = createBoulderCard(boulder);
-            bouldersContainer.appendChild(boulderElement);
+            allBoulders.push(boulder);
         });
+
+        filterAndDisplayBoulders();
     } catch (error) {
         console.error("Error al cargar los boulders:", error);
         bouldersContainer.innerHTML = '<p>Error al cargar los boulders. Por favor, intenta más tarde.</p>';
     }
+}
+
+// Función para filtrar y mostrar los boulders
+function filterAndDisplayBoulders() {
+    const searchTerm = boulderSearch.value.toLowerCase();
+    const selectedGrade = gradeSelect.value;
+    const bouldersContainer = document.getElementById('boulders-container');
+    
+    const filteredBoulders = allBoulders.filter(boulder => {
+        const matchesSearch = boulder.nombre.toLowerCase().includes(searchTerm);
+        const matchesGrade = !selectedGrade || boulder.grado === selectedGrade;
+        return matchesSearch && matchesGrade;
+    });
+
+    bouldersContainer.innerHTML = '';
+    
+    if (filteredBoulders.length === 0) {
+        bouldersContainer.innerHTML = '<p>No se encontraron boulders que coincidan con los criterios de búsqueda.</p>';
+        return;
+    }
+
+    filteredBoulders.forEach(boulder => {
+        const boulderElement = createBoulderCard(boulder);
+        bouldersContainer.appendChild(boulderElement);
+    });
 }
 
 // Función para crear una tarjeta de boulder
@@ -134,17 +154,43 @@ function createBoulderCard(boulder) {
 
 // Función para mostrar detalles del boulder
 function showBoulderDetails(boulder) {
+    const coordsString = `${boulder.latitud},${boulder.longitud}`;
+    const googleMapsUrl = `https://www.google.com/maps?q=${boulder.latitud},${boulder.longitud}`;
+    
     modalContent.innerHTML = `
         <div class="boulder-detail">
             <img src="${boulder.imagenUrl}" alt="${boulder.nombre}">
             <h2>${boulder.nombre}</h2>
             <p><strong>Grado:</strong> ${boulder.grado}</p>
-            <p><strong>Ubicación:</strong></p>
-            <p>Latitud: ${boulder.latitud}</p>
-            <p>Longitud: ${boulder.longitud}</p>
+            <div class="location-details">
+                <p><strong>Ubicación:</strong></p>
+                <p class="coords">${coordsString}</p>
+                <div class="location-buttons">
+                    <button class="btn btn-copy" onclick="copyCoords('${coordsString}')">
+                        <i class="fas fa-copy"></i> Copiar Coordenadas
+                    </button>
+                    <a href="${googleMapsUrl}" target="_blank" class="btn btn-maps">
+                        <i class="fas fa-map-marker-alt"></i> Abrir en Google Maps
+                    </a>
+                </div>
+            </div>
         </div>
     `;
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
+}
+
+// Función para copiar coordenadas
+function copyCoords(coords) {
+    navigator.clipboard.writeText(coords).then(() => {
+        const copyBtn = document.querySelector('.btn-copy');
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+        setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+        }, 2000);
+    }).catch(err => {
+        console.error('Error al copiar: ', err);
+    });
 }
 
 // Event Listeners
@@ -158,6 +204,9 @@ window.addEventListener('click', (event) => {
     }
 });
 
+// Event Listeners para filtros y búsqueda
+boulderSearch.addEventListener('input', filterAndDisplayBoulders);
+gradeSelect.addEventListener('change', filterAndDisplayBoulders);
 sectorSelect.addEventListener('change', (e) => {
     loadBoulders(e.target.value);
 });
