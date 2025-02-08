@@ -727,21 +727,22 @@ body {
 /* Botón de cancelar selección */
 .cancel-selection {
     position: fixed;
-    top: 5rem;
-    left: 2rem;
+    top: 70px;
+    left: 10px;
     background-color: var(--color-white);
     color: var(--text-primary);
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     display: none;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 999;
+    z-index: 1001;
     transition: all 0.3s ease;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    border: 1px solid var(--color-light-gray);
 }
 
 .cancel-selection span {
@@ -756,4 +757,15 @@ body {
 .cancel-selection:hover {
     background-color: var(--color-light-gray);
     transform: rotate(90deg);
+}
+
+/* Ajustes específicos para móvil */
+@media (max-width: 768px) {
+    .cancel-selection {
+        top: 65px;
+        left: 10px;
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
 } 
