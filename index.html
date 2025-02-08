@@ -134,11 +134,10 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <p>Explorando y documentando los mejores lugares para escalar</p>
+                <p><a href="#" onclick="copyEmail(event)">appescalada@gmail.com</a></p>
             </div>
             <div class="footer-section">
-                <p>&copy; 2025 CLIMB & CREATE</p>
-                <p>Todos los derechos reservados</p>
+                <p>&copy; CHILE 2025 </p>
             </div>
             <div class="footer-section">
                 <div class="social-links">
@@ -149,5 +148,12 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        function copyEmail(event) {
+            event.preventDefault();
+            navigator.clipboard.writeText('appescalada@gmail.com');
+        }
+    </script>
 </body>
 </html> 
