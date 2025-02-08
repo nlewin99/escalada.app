@@ -2,6 +2,7 @@ import { initFirebase } from './config/firebase.js';
 import { Navbar } from './components/Navbar.js';
 import { LandingView } from './views/LandingView.js';
 import { BouldersView } from './views/BouldersView.js';
+import { OfflineView } from './views/OfflineView.js';
 
 class App {
     constructor() {
@@ -9,6 +10,7 @@ class App {
         this.navbar = null;
         this.landingView = null;
         this.bouldersView = null;
+        this.offlineView = null;
     }
 
     init() {
@@ -16,6 +18,8 @@ class App {
         this.navbar = new Navbar();
         this.landingView = new LandingView();
         this.bouldersView = new BouldersView(this.db);
+        this.offlineView = new OfflineView();
+        this.offlineView.init();
     }
 }
 

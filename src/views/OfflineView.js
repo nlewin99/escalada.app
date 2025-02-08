@@ -1,0 +1,48 @@
+import { OfflineStorage } from '../utils/OfflineStorage.js';
+import { BoulderCard } from '../components/BoulderCard.js';
+
+export class OfflineView {
+    constructor() {
+        this.container = document.getElementById('offline-container');
+    }
+
+    init() {
+        this.renderSavedBoulders();
+    }
+
+    renderSavedBoulders() {
+        const savedBoulders = OfflineStorage.getSavedBoulders();
+        
+        if (savedBoulders.length === 0) {
+            this.container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-save fa-3x"></i>
+                    <h2>No hay boulders guardados</h2>
+                    <p>Los boulders que guardes aparecerán aquí</p>
+                </div>
+            `;
+            return;
+        }
+
+        this.container.innerHTML = `
+            <div class="offline-header">
+                <h1>Boulders Guardados</h1>
+                <button class="btn btn-primary" onclick="window.exportSavedBoulders()">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </button>
+            </div>
+            <div class="boulder-grid"></div>
+        `;
+
+        const grid = this.container.querySelector('.boulder-grid');
+        savedBoulders.forEach(boulder => {
+            const card = new BoulderCard(boulder, (b) => BoulderCard.showDetails(b));
+            grid.appendChild(card.render());
+        });
+
+        // Definir la función global para exportar
+        window.exportSavedBoulders = () => {
+            OfflineStorage.exportToPDF();
+        };
+    }
+} 

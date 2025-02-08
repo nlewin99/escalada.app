@@ -1,3 +1,5 @@
+import { OfflineStorage } from '../utils/OfflineStorage.js';
+
 export class BoulderCard {
     constructor(boulder, onClickCallback) {
         this.boulder = boulder;
@@ -25,6 +27,7 @@ export class BoulderCard {
         const modalContent = document.getElementById('boulder-detail-content');
         const coordsString = `${boulder.latitud},${boulder.longitud}`;
         const googleMapsUrl = `https://www.google.com/maps?q=${boulder.latitud},${boulder.longitud}`;
+        const isSaved = OfflineStorage.isBoulderSaved(boulder.id);
         
         modalContent.innerHTML = `
             <div class="boulder-detail">
@@ -43,9 +46,31 @@ export class BoulderCard {
                         </a>
                     </div>
                 </div>
+                <div class="offline-actions">
+                    <button class="btn ${isSaved ? 'btn-danger' : 'btn-primary'}" onclick="toggleSaveBoulder('${boulder.id}')">
+                        <i class="fas ${isSaved ? 'fa-trash' : 'fa-save'}"></i>
+                        ${isSaved ? 'Eliminar de Guardados' : 'Guardar para Offline'}
+                    </button>
+                </div>
             </div>
         `;
         modal.style.display = 'flex';
+
+        // Definir las funciones globales para los botones
+        window.toggleSaveBoulder = (boulderId) => {
+            if (OfflineStorage.isBoulderSaved(boulderId)) {
+                if (OfflineStorage.removeBoulder(boulderId)) {
+                    alert('Boulder eliminado de guardados');
+                }
+            } else {
+                if (OfflineStorage.saveBoulder(boulder)) {
+                    alert('Boulder guardado correctamente');
+                }
+            }
+            BoulderCard.showDetails(boulder); // Actualizar la vista
+        };
+
+        window.copyCoords = this.copyCoords;
     }
 
     static copyCoords(coords) {

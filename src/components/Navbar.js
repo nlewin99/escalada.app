@@ -22,7 +22,7 @@ export class Navbar {
 
     handleNavClick(e) {
         e.preventDefault();
-        const view = e.target.dataset.view;
+        const view = e.target.closest('.nav-item').dataset.view;
         this.navigateToView(view);
         if (window.innerWidth <= 768) {
             this.toggleNav();
@@ -41,15 +41,23 @@ export class Navbar {
     navigateToView(viewName) {
         const landingPage = document.querySelector('.landing-page');
         const mainContent = document.querySelector('.main-content');
+        const offlineContent = document.querySelector('.offline-content');
         
+        // Ocultar todas las vistas
+        landingPage.style.display = 'none';
+        mainContent.style.display = 'none';
+        offlineContent.style.display = 'none';
+
+        // Mostrar la vista seleccionada
         switch(viewName) {
             case 'landing':
                 landingPage.style.display = 'block';
-                mainContent.style.display = 'none';
                 break;
             case 'boulders':
-                landingPage.style.display = 'none';
                 mainContent.style.display = 'block';
+                break;
+            case 'offline':
+                offlineContent.style.display = 'block';
                 break;
         }
     }

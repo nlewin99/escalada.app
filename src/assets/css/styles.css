@@ -149,17 +149,17 @@ body {
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
 }
 
 .modal-content {
     position: relative;
     background-color: var(--color-white);
-    padding: 20px;
+    padding: 2rem;
     width: 90%;
     max-width: 600px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    margin: 0;
     max-height: 90vh;
     overflow-y: auto;
 }
@@ -176,6 +176,51 @@ body {
 
 .close-button:hover {
     color: var(--text-primary);
+}
+
+/* Estilos para el detalle del boulder en el modal */
+.boulder-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.boulder-detail img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.boulder-detail h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.location-details {
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.location-details p {
+    margin: 0.5rem 0;
+}
+
+.location-details .coords {
+    font-family: monospace;
+    background-color: var(--color-white);
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.location-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
 }
 
 /* Estilos para la Landing Page */
@@ -354,4 +399,161 @@ body {
     .boulders-grid {
         grid-template-columns: 1fr;
     }
+
+    .modal-content {
+        padding: 1rem;
+    }
+
+    .boulder-detail img {
+        height: 200px;
+    }
+
+    .location-buttons {
+        flex-direction: column;
+    }
+
+    .location-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.offline-actions {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background-color: var(--color-dark-gray);
+}
+
+.btn-secondary {
+    background-color: var(--color-gray);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-black);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-dark-gray);
+}
+
+.btn-danger:hover {
+    background-color: #bd2130;
+}
+
+/* Estilos para la vista offline */
+.offline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 2rem auto;
+    max-width: 500px;
+}
+
+.empty-state i {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+    color: #343a40;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #6c757d;
+}
+
+.boulder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+/* Estilos para los botones */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn i {
+    font-size: 1.1em;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-maps {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-maps:hover {
+    background-color: #218838;
+}
+
+.btn-copy {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-copy:hover {
+    background-color: #5a6268;
+}
+
+/* Estilos para el contenido offline */
+.offline-content {
+    margin-top: 60px; /* Para compensar el navbar fijo */
+    min-height: calc(100vh - 60px);
+    width: 100%;
+}
+
+#offline-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 } 

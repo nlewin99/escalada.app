@@ -6,6 +6,8 @@
     <title>Boulders de Escalada</title>
     <link rel="stylesheet" href="src/assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Agregamos jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <!-- Navbar -->
@@ -18,6 +20,9 @@
         <div class="nav-links">
             <a href="#" class="nav-item" data-view="landing">Inicio</a>
             <a href="#" class="nav-item" data-view="boulders">Boulders</a>
+            <a href="#" class="nav-item" data-view="offline">
+                <i class="fas fa-save"></i> Guardados
+            </a>
         </div>
         <div class="nav-toggle">
             <i class="fas fa-bars"></i>
@@ -82,6 +87,13 @@
             </div>
 
             <div id="boulders-container" class="boulders-grid"></div>
+        </div>
+    </div>
+
+    <!-- Offline Content -->
+    <div class="offline-content" style="display: none;">
+        <div class="container" id="offline-container">
+            <!-- El contenido se llenará dinámicamente -->
         </div>
     </div>
 
