@@ -18,6 +18,51 @@ const modal = document.getElementById('boulder-modal');
 const modalContent = document.getElementById('boulder-detail-content');
 const closeButton = document.querySelector('.close-button');
 const sectorSelect = document.getElementById('sector-select');
+const hamburgerMenu = document.querySelector('.hamburger-menu');
+const menuItems = document.querySelector('.menu-items');
+const menuLinks = document.querySelectorAll('.menu-item');
+
+// Actualizar el array de imágenes para usar las locales
+const sliderImages = [
+    'img/1_bn.jpg',
+    'img/2_bn.jpg'
+];
+
+let currentImageIndex = 0;
+
+// Función mejorada para el slider
+function initializeSlider() {
+    const slider = document.querySelector('.slider');
+    
+    // Precargar las imágenes
+    sliderImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
+    // Configurar la primera imagen
+    updateSliderImage(slider);
+
+    // Agregar estilos de transición
+    slider.style.transition = 'background-image 0.5s ease-in-out';
+
+    // Iniciar el intervalo para cambiar las imágenes
+    setInterval(() => {
+        currentImageIndex = (currentImageIndex + 1) % sliderImages.length;
+        updateSliderImage(slider);
+    }, 5000);
+}
+
+// Función actualizada para cambiar la imagen
+function updateSliderImage(slider) {
+    slider.style.backgroundImage = `url(${sliderImages[currentImageIndex]})`;
+}
+
+// Función para mostrar el contenido principal
+function showMainContent() {
+    document.querySelector('.landing-page').style.display = 'none';
+    document.querySelector('.main-content').style.display = 'block';
+}
 
 // Cargar sectores
 async function loadSectors() {
@@ -117,8 +162,50 @@ sectorSelect.addEventListener('change', (e) => {
     loadBoulders(e.target.value);
 });
 
-// Inicializar la página
+// Event Listeners
+document.getElementById('explore-button').addEventListener('click', showMainContent);
+
+// Función para manejar el menú hamburguesa
+function toggleMenu() {
+    menuItems.classList.toggle('active');
+}
+
+// Función para navegar entre vistas
+function navigateToView(viewName) {
+    switch(viewName) {
+        case 'landing':
+            document.querySelector('.landing-page').style.display = 'block';
+            document.querySelector('.main-content').style.display = 'none';
+            break;
+        case 'boulders':
+            document.querySelector('.landing-page').style.display = 'none';
+            document.querySelector('.main-content').style.display = 'block';
+            break;
+    }
+    toggleMenu(); // Cerrar el menú después de navegar
+}
+
+// Event Listeners para el menú
+hamburgerMenu.addEventListener('click', toggleMenu);
+
+menuLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const view = e.target.dataset.view;
+        navigateToView(view);
+    });
+});
+
+// Cerrar el menú si se hace clic fuera de él
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-menu') && menuItems.classList.contains('active')) {
+        toggleMenu();
+    }
+});
+
+// Modificar el inicializador de la página
 document.addEventListener('DOMContentLoaded', () => {
+    initializeSlider();
     loadSectors();
     loadBoulders();
 }); 

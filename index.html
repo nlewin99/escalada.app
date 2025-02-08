@@ -5,20 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boulders de Escalada</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Agregar Font Awesome para el ícono del menú -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Boulders de Escalada</h1>
-        
-        <!-- Selector de sectores -->
-        <div class="sector-selector">
-            <label for="sector-select">Selecciona un sector:</label>
-            <select id="sector-select">
-                <option value="">Todos los sectores</option>
-            </select>
+    <!-- Menú Hamburguesa -->
+    <nav class="nav-menu">
+        <div class="hamburger-menu">
+            <i class="fas fa-bars"></i>
         </div>
+        <div class="menu-items">
+            <a href="#" class="menu-item" data-view="landing">Inicio</a>
+            <a href="#" class="menu-item" data-view="boulders">Boulders</a>
+        </div>
+    </nav>
 
-        <div id="boulders-container" class="boulders-grid"></div>
+    <!-- Landing Page -->
+    <div class="landing-page">
+        <div class="slider"></div>
+        <div class="landing-content">
+            <h1>Informacion de escalada</h1>
+            <button id="explore-button">Explorar!</button>
+        </div>
+    </div>
+
+    <!-- Main Content (inicialmente oculto) -->
+    <div class="main-content" style="display: none;">
+        <div class="container">
+            <h1>Boulders de Escalada</h1>
+            
+            <!-- Selector de sectores -->
+            <div class="sector-selector">
+                <label for="sector-select">Selecciona un sector:</label>
+                <select id="sector-select">
+                    <option value="">Todos los sectores</option>
+                </select>
+            </div>
+
+            <div id="boulders-container" class="boulders-grid"></div>
+        </div>
     </div>
 
     <!-- Modal para detalles -->
@@ -33,5 +58,23 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="app.js"></script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>CLIMB & CREATE</h3>
+                <p>Explorando y documentando los mejores lugares para escalar</p>
+            </div>
+            <div class="footer-section">
+                <p>&copy; 2024 CLIMB & CREATE</p>
+                <p>Todos los derechos reservados</p>
+            </div>
+            <div class="footer-section">
+                <p>Creado con ❤️ por el equipo de</p>
+                <p>CLIMB & CREATE</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html> 
