@@ -257,7 +257,33 @@ export class OfflineStorage {
             yPosition += 35;
         });
 
-        // Generar y descargar el PDF
-        doc.save('boulders-guardados.pdf');
+        try {
+            // Generar el PDF como blob
+            const pdfBlob = doc.output('blob');
+            
+            // Crear URL del blob
+            const blobUrl = URL.createObjectURL(pdfBlob);
+            
+            // Crear un elemento a temporal
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = 'boulders-guardados.pdf';
+            
+            // En dispositivos móviles, abrir en nueva pestaña
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.open(blobUrl, '_blank');
+            } else {
+                // En desktop, descargar directamente
+                link.click();
+            }
+            
+            // Limpiar
+            setTimeout(() => {
+                URL.revokeObjectURL(blobUrl);
+            }, 100);
+        } catch (error) {
+            console.error('Error al generar PDF:', error);
+            alert('Error al generar el PDF. Por favor, intenta de nuevo.');
+        }
     }
 } 
