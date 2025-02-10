@@ -1,9 +1,12 @@
 import { BoulderCard } from '../components/BoulderCard.js';
 import { OfflineStorage } from '../utils/OfflineStorage.js';
+import { BoulderForm } from '../components/BoulderForm.js';
+import { AuthService } from '../utils/AuthService.js';
 
 export class BouldersView {
-    constructor(db) {
+    constructor(db, storage) {
         this.db = db;
+        this.storage = storage;
         this.allBoulders = [];
         this.sectorSelect = document.getElementById('sector-select');
         this.gradeSelect = document.getElementById('grade-select');
@@ -11,10 +14,13 @@ export class BouldersView {
         this.bouldersContainer = document.getElementById('boulders-container');
         this.modal = document.getElementById('boulder-modal');
         this.closeButton = document.querySelector('.close-button');
+        this.boulderForm = new BoulderForm(this.db, this.storage);
         this.init();
     }
 
     init() {
+        document.body.appendChild(this.boulderForm.getElement());
+        this.boulderForm.setOnSuccess(() => this.loadBoulders(this.sectorSelect.value));
         this.loadSectors();
         this.loadBoulders();
         this.setupEventListeners();
@@ -30,23 +36,65 @@ export class BouldersView {
                 this.modal.style.display = 'none';
             }
         });
+
+        // Agregar botón de nuevo boulder si el usuario está autenticado
+        const container = document.querySelector('.filters-container');
+        if (container && AuthService.getCurrentUser()) {
+            const addButton = document.createElement('button');
+            addButton.className = 'btn btn-primary';
+            addButton.innerHTML = '<i class="fas fa-plus"></i> Nuevo Boulder';
+            addButton.onclick = () => this.boulderForm.show();
+            container.appendChild(addButton);
+        }
     }
 
     handleBoulderClick(boulder) {
-        // Verificar si estamos en modo eliminación
-        const isInDeletionMode = document.body.classList.contains('deletion-mode') || 
-                                document.querySelector('.main-content').classList.contains('deletion-mode');
-        
-        if (isInDeletionMode) {
-            // Si el boulder está guardado, permitir su selección para eliminar
+        if (document.body.classList.contains('deletion-mode') || 
+            document.querySelector('.main-content').classList.contains('deletion-mode')) {
             if (OfflineStorage.isBoulderSaved(boulder.id)) {
                 OfflineStorage.togglePendingDeletion(boulder.id);
             }
-            return; // Importante: retornar aquí para evitar abrir el modal
+            return;
         } else if (document.body.classList.contains('save-mode')) {
             OfflineStorage.togglePendingSave(boulder);
         } else {
-            BoulderCard.showDetails(boulder);
+            BoulderCard.showDetails(
+                boulder,
+                (b) => this.handleEdit(b),
+                (b) => this.handleDelete(b)
+            );
+        }
+    }
+
+    async handleEdit(boulder) {
+        this.boulderForm.show(boulder);
+    }
+
+    async handleDelete(boulder) {
+        try {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.classList.add('visible');
+
+            // Eliminar la imagen de Storage si existe
+            if (boulder.imagenUrl) {
+                try {
+                    const storageRef = firebase.storage().refFromURL(boulder.imagenUrl);
+                    await storageRef.delete();
+                } catch (error) {
+                    console.error('Error al eliminar la imagen:', error);
+                }
+            }
+
+            // Eliminar el documento de Firestore
+            await this.db.collection('boulders').doc(boulder.id).delete();
+
+            // Recargar los boulders
+            await this.loadBoulders(this.sectorSelect.value);
+        } catch (error) {
+            console.error('Error al eliminar el boulder:', error);
+            alert('Error al eliminar el boulder. Por favor, intenta de nuevo.');
+        } finally {
+            document.getElementById('loading-overlay').classList.remove('visible');
         }
     }
 
@@ -115,7 +163,10 @@ export class BouldersView {
         }
 
         filteredBoulders.forEach(boulder => {
-            const boulderCard = new BoulderCard(boulder, (b) => this.handleBoulderClick(b));
+            const boulderCard = new BoulderCard(
+                boulder,
+                (b) => this.handleBoulderClick(b)
+            );
             this.bouldersContainer.appendChild(boulderCard.render());
         });
     }

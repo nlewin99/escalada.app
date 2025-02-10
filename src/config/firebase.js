@@ -12,5 +12,9 @@ const firebaseConfig = {
 // Inicializar Firebase
 export const initFirebase = () => {
     firebase.initializeApp(firebaseConfig);
-    return firebase.firestore();
+    return {
+        db: firebase.firestore(),
+        auth: firebase.auth(),
+        storage: firebase.storage()
+    };
 }; 
