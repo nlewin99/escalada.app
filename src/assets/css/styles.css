@@ -153,6 +153,47 @@ body {
     padding: 1rem;
 }
 
+@media (max-width: 768px) {
+    .modal {
+        padding: 0;
+    }
+
+    .modal-content {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .boulder-form-modal {
+        padding: 0;
+    }
+
+    .boulder-form-container {
+        border-radius: 0;
+        margin: 0;
+    }
+}
+
+/* Ajustes para el scroll en dispositivos móviles */
+@media (max-width: 768px) {
+    body.modal-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
+
+    .modal-content,
+    .boulder-form-container {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
 .modal-content {
     position: relative;
     background-color: var(--color-white);
@@ -926,6 +967,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1100;
+    padding: 1rem;
 }
 
 .boulder-form-container {
@@ -936,6 +978,9 @@ body {
     width: 90%;
     max-width: 500px;
     position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Para scroll suave en iOS */
 }
 
 .boulder-form-container h2 {
@@ -980,12 +1025,147 @@ body {
 
 @media (max-width: 768px) {
     .boulder-form-container {
-        width: 95%;
-        padding: 1.5rem;
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
     }
 
-    .boulder-actions {
+    .boulder-form-container form {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem 0;
+    }
+
+    .boulder-form-container h2 {
+        position: sticky;
+        top: 0;
+        background: var(--color-white);
+        padding: 1rem 0;
+        margin: 0;
+        z-index: 1;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+
+    .location-inputs {
         flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .location-field {
+        width: 100%;
+    }
+
+    .get-location-btn {
+        width: 100%;
+        padding: 0.8rem;
+        margin-top: 0.5rem;
+    }
+
+    .image-preview {
+        max-height: 200px;
+        overflow: hidden;
+        margin: 0.5rem 0;
+    }
+
+    .image-preview img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .submit-btn {
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        padding: 1rem;
+        margin-top: 1rem;
+        background: var(--color-white);
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+
+    .close-button {
+        position: fixed;
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.5rem;
+        font-size: 1.5rem;
+        z-index: 2;
+    }
+
+    /* Ajustes para el scroll */
+    .boulder-form-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .boulder-form-container::-webkit-scrollbar-track {
+        background: var(--bg-secondary);
+        border-radius: 3px;
+    }
+
+    .boulder-form-container::-webkit-scrollbar-thumb {
+        background: var(--color-gray);
+        border-radius: 3px;
+    }
+}
+
+/* Ajustes para pantallas muy pequeñas */
+@media (max-width: 320px) {
+    .boulder-form-container {
+        padding: 0.8rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Ajustes para modo landscape en móviles */
+@media (max-height: 500px) and (orientation: landscape) {
+    .boulder-form-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        overflow-y: auto;
+    }
+
+    .boulder-form-container h2 {
+        grid-column: 1 / -1;
+    }
+
+    .form-group {
+        margin-bottom: 0.8rem;
+    }
+
+    .submit-btn {
+        grid-column: 1 / -1;
     }
 }
 
