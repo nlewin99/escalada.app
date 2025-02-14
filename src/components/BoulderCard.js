@@ -1,10 +1,13 @@
 import { OfflineStorage } from '../utils/OfflineStorage.js';
 import { OfflineView } from '../views/OfflineView.js';
+import { AuthService } from '../utils/AuthService.js';
 
 export class BoulderCard {
-    constructor(boulder, onClickCallback) {
+    constructor(boulder, onClickCallback, onEditCallback, onDeleteCallback) {
         this.boulder = boulder;
         this.onClickCallback = onClickCallback;
+        this.onEditCallback = onEditCallback;
+        this.onDeleteCallback = onDeleteCallback;
     }
 
     render() {
@@ -28,13 +31,14 @@ export class BoulderCard {
         return div;
     }
 
-    static showDetails(boulder) {
+    static showDetails(boulder, onEdit, onDelete) {
         const modal = document.getElementById('boulder-modal');
         const modalContent = document.getElementById('boulder-detail-content');
         const coordsString = `${boulder.latitud},${boulder.longitud}`;
         const googleMapsUrl = `https://www.google.com/maps?q=${boulder.latitud},${boulder.longitud}`;
         const isSaved = OfflineStorage.isBoulderSaved(boulder.id);
         const isOfflineView = document.querySelector('.offline-content').style.display === 'block';
+        const isAuthenticated = AuthService.getCurrentUser() !== null;
         
         modalContent.innerHTML = `
             <div class="boulder-detail">
@@ -53,16 +57,22 @@ export class BoulderCard {
                         </a>
                     </div>
                 </div>
-                <div class="offline-actions">
+                <div class="boulder-actions">
+                    ${isAuthenticated ? `
+                        <button class="btn btn-primary" onclick="editBoulder('${boulder.id}')">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteBoulder('${boulder.id}')">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    ` : ''}
                     ${isOfflineView ? `
                         <button class="btn btn-danger" onclick="toggleSaveBoulder('${boulder.id}')">
-                            <i class="fas fa-trash"></i>
-                            Eliminar de Guardados
+                            <i class="fas fa-trash"></i> Eliminar de Guardados
                         </button>
                     ` : `
                         <button class="btn btn-primary" onclick="toggleSaveBoulder('${boulder.id}')">
-                            <i class="fas fa-save"></i>
-                            Guardar para Offline
+                            <i class="fas fa-save"></i> Guardar para Offline
                         </button>
                     `}
                 </div>
@@ -83,19 +93,27 @@ export class BoulderCard {
             }
         };
 
+        window.editBoulder = (boulderId) => {
+            modal.style.display = 'none';
+            if (onEdit) onEdit(boulder);
+        };
+
+        window.deleteBoulder = async (boulderId) => {
+            if (confirm('¿Estás seguro de que deseas eliminar este boulder?')) {
+                modal.style.display = 'none';
+                if (onDelete) onDelete(boulder);
+            }
+        };
+
         window.copyCoords = this.copyCoords;
     }
 
     static copyCoords(coords) {
         navigator.clipboard.writeText(coords).then(() => {
-            const copyBtn = document.querySelector('.btn-copy');
-            const originalText = copyBtn.innerHTML;
-            copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-            setTimeout(() => {
-                copyBtn.innerHTML = originalText;
-            }, 2000);
+            alert('Coordenadas copiadas al portapapeles');
         }).catch(err => {
-            console.error('Error al copiar: ', err);
+            console.error('Error al copiar coordenadas:', err);
+            alert('Error al copiar coordenadas');
         });
     }
 } 

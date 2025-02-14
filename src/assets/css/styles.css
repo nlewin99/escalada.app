@@ -768,4 +768,413 @@ body {
         height: 32px;
         font-size: 1rem;
     }
+}
+
+/* Estilos para el formulario de login */
+.login-form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+
+.login-container {
+    background-color: var(--color-white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    width: 90%;
+    max-width: 400px;
+}
+
+.login-container h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-light-gray);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--color-dark-gray);
+}
+
+.error-message {
+    color: var(--color-danger);
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Ajustes para el botón de login */
+.login-container .btn {
+    width: 100%;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+/* Estado de usuario autenticado */
+.user-authenticated .auth-required {
+    display: block;
+}
+
+.user-authenticated .auth-hidden {
+    display: none;
+}
+
+/* Estado de usuario no autenticado */
+.user-not-authenticated .auth-required {
+    display: none;
+}
+
+.user-not-authenticated .auth-hidden {
+    display: block;
+}
+
+/* Estilos para el botón de logout */
+.logout-btn {
+    color: var(--color-danger) !important;
+    display: none;
+}
+
+.logout-btn:hover {
+    color: #bd2130 !important;
+}
+
+.user-authenticated .logout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .logout-btn {
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border-top: 1px solid var(--color-light-gray);
+    }
+}
+
+/* Estilos para los botones de autenticación */
+.login-btn {
+    color: var(--color-primary) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.login-btn:hover {
+    color: var(--color-dark-gray) !important;
+}
+
+@media (max-width: 768px) {
+    .login-btn {
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border-top: 1px solid var(--color-light-gray);
+    }
+}
+
+/* Ajustes para el formulario de login */
+.login-container .close-button {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.login-container .close-button:hover {
+    color: var(--text-primary);
+}
+
+/* Estilos para el formulario de boulder */
+.boulder-form-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+
+.boulder-form-container {
+    background-color: var(--color-white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+
+.boulder-form-container h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.boulder-form-container .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.boulder-form-container .image-preview {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.boulder-form-container .image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.boulder-form-container input[type="file"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-light-gray);
+    border-radius: 4px;
+}
+
+/* Botones de acción en la vista de boulder */
+.boulder-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.boulder-actions .btn {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .boulder-form-container {
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    .boulder-actions {
+        flex-direction: column;
+    }
+}
+
+/* Contenedor de filtros y acciones */
+.filters-container {
+    background-color: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.actions-container {
+    margin-left: auto;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.add-boulder-btn {
+    background-color: var(--color-dark-gray);
+    color: var(--color-white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.add-boulder-btn:hover {
+    background-color: var(--color-black);
+    transform: translateY(-2px);
+}
+
+.add-boulder-btn i {
+    font-size: 1.1em;
+}
+
+@media (max-width: 768px) {
+    .filters-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .actions-container {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .add-boulder-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Estilos para los campos de ubicación */
+.location-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+.location-field {
+    flex: 1;
+    min-width: 120px;
+}
+
+.location-field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.location-field input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-light-gray);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.get-location-btn {
+    height: 42px;
+    white-space: nowrap;
+}
+
+.location-status {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.location-status .error {
+    color: var(--color-danger);
+}
+
+.location-status .success {
+    color: #28a745;
+}
+
+.location-status .info {
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .location-inputs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .location-field {
+        width: 100%;
+    }
+
+    .get-location-btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Estilos para el mensaje de advertencia en desktop */
+.desktop-warning {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    color: #6c757d;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.desktop-warning i {
+    color: #17a2b8;
+    font-size: 1.1rem;
+}
+
+/* Estilos para campos de ubicación bloqueados */
+.location-field input[readonly] {
+    background-color: var(--bg-secondary);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Estilos para el botón de submit */
+.submit-btn {
+    transition: opacity 0.3s ease;
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Estilos para resaltar que los campos de ubicación solo se pueden modificar por GPS */
+.location-inputs {
+    position: relative;
+}
+
+.location-field {
+    position: relative;
+}
+
+.location-field input[readonly] + .gps-only {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
 } 
