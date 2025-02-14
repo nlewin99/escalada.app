@@ -15,6 +15,7 @@ export class BouldersView {
         this.modal = document.getElementById('boulder-modal');
         this.closeButton = document.querySelector('.close-button');
         this.boulderForm = new BoulderForm(this.db, this.storage);
+        this.actionsContainer = null;
         this.init();
     }
 
@@ -24,6 +25,36 @@ export class BouldersView {
         this.loadSectors();
         this.loadBoulders();
         this.setupEventListeners();
+        this.setupAuthListener();
+    }
+
+    setupAuthListener() {
+        // Crear el contenedor de acciones si no existe
+        if (!this.actionsContainer) {
+            this.actionsContainer = document.createElement('div');
+            this.actionsContainer.className = 'actions-container';
+            const filtersContainer = document.querySelector('.filters-container');
+            filtersContainer.appendChild(this.actionsContainer);
+        }
+
+        // Escuchar cambios en el estado de autenticación
+        AuthService.onAuthStateChanged((user) => {
+            this.updateNewBoulderButton(user);
+        });
+    }
+
+    updateNewBoulderButton(user) {
+        // Limpiar el contenedor de acciones
+        this.actionsContainer.innerHTML = '';
+        
+        // Si hay un usuario autenticado, mostrar el botón
+        if (user) {
+            const addButton = document.createElement('button');
+            addButton.className = 'btn btn-primary add-boulder-btn';
+            addButton.innerHTML = '<i class="fas fa-plus"></i> Nuevo Boulder';
+            addButton.onclick = () => this.boulderForm.show();
+            this.actionsContainer.appendChild(addButton);
+        }
     }
 
     setupEventListeners() {
@@ -36,16 +67,6 @@ export class BouldersView {
                 this.modal.style.display = 'none';
             }
         });
-
-        // Agregar botón de nuevo boulder si el usuario está autenticado
-        const container = document.querySelector('.filters-container');
-        if (container && AuthService.getCurrentUser()) {
-            const addButton = document.createElement('button');
-            addButton.className = 'btn btn-primary';
-            addButton.innerHTML = '<i class="fas fa-plus"></i> Nuevo Boulder';
-            addButton.onclick = () => this.boulderForm.show();
-            container.appendChild(addButton);
-        }
     }
 
     handleBoulderClick(boulder) {
