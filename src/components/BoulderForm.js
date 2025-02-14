@@ -447,6 +447,9 @@ export class BoulderForm {
         const title = this.container.querySelector('h2');
         const submitButton = form.querySelector('button[type="submit"]');
         
+        // Agregar clase al body para prevenir scroll
+        document.body.classList.add('modal-open');
+        
         // Actualizar título según modo
         title.textContent = boulder ? 'Editar Boulder' : 'Nuevo Boulder';
         
@@ -515,6 +518,8 @@ export class BoulderForm {
         this.container.querySelector('#boulder-form').reset();
         this.container.querySelector('.image-preview').innerHTML = '';
         this.container.querySelector('#form-error').textContent = '';
+        // Remover clase del body para restaurar scroll
+        document.body.classList.remove('modal-open');
     }
 
     getElement() {
