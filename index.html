@@ -14,7 +14,7 @@
     <nav class="navbar">
         <div class="nav-brand">
             <a href="#" data-view="landing">
-                <i class="fas fa-mountain"></i>
+                <img src="src/assets/img/Diseño sin título.svg.svg" alt="Climb and Create Logo" class="brand-logo">
             </a>
         </div>
         <div class="nav-links">
@@ -22,6 +22,12 @@
             <a href="#" class="nav-item" data-view="boulders">Boulders</a>
             <a href="#" class="nav-item" data-view="offline">
                 <i class="fas fa-save"></i> Guardados
+            </a>
+            <a href="#" class="nav-item auth-required" data-view="sectors" style="display: none;">
+                <i class="fas fa-layer-group"></i> Sectores
+            </a>
+            <a href="#" class="nav-item auth-required" data-view="profile" style="display: none;">
+                <i class="fas fa-user"></i> Perfil
             </a>
             <a href="#" class="nav-item logout-btn" id="logout-btn">
                 <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
@@ -34,12 +40,84 @@
 
     <!-- Landing Page -->
     <div class="landing-page">
-        <div class="slider"></div>
-        <div class="landing-content">
-            <h1>Información de escalada</h1>
-            <p>Actualmente solo Información de la Silla del Diablo</p>
-            <button id="explore-button" class="btn">Explorar</button>
-        </div>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="slider"></div>
+            <div class="landing-content">
+                <h1>Información de escalada</h1>
+                <p>Actualmente solo Información de la Silla del Diablo</p>
+                <button id="explore-button" class="btn">Explorar</button>
+            </div>
+            <div class="scroll-indicator">
+                <span class="scroll-text">Descubre más</span>
+                <div class="scroll-arrow">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Características Section -->
+        <section class="features-section">
+            <div class="container">
+                <h2>Características</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3>Ubicaciones Precisas</h3>
+                        <p>Encuentra fácilmente los boulders con coordenadas GPS exactas</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Modo Offline</h3>
+                        <p>Guarda tus boulders favoritos para acceder sin conexión</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Comunidad</h3>
+                        <p>Comparte y descubre nuevos boulders con otros escaladores</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Últimos Boulders Section -->
+        <section class="latest-boulders-section">
+            <div class="container">
+                <h2>Últimos Boulders Añadidos</h2>
+                <div class="latest-boulders-grid" id="latest-boulders">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Estadísticas Section -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number" id="total-boulders">0</span>
+                        <span class="stat-label">Boulders Registrados</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="total-sectors">0</span>
+                        <span class="stat-label">Sectores</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="total-users">0</span>
+                        <span class="stat-label">Usuarios Activos</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <h2>¿Listo para empezar?</h2>
+                <p>Únete a nuestra comunidad y descubre nuevos boulders</p>
+                <button class="btn btn-primary login-cta">Iniciar Sesión</button>
+            </div>
+        </section>
     </div>
 
     <!-- Main Content (inicialmente oculto) -->
@@ -97,6 +175,52 @@
     <div class="offline-content" style="display: none;">
         <div class="container" id="offline-container">
             <!-- El contenido se llenará dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Sector Manager -->
+    <div class="sector-manager" style="display: none;">
+        <div class="container">
+            <h1>Gestión de Sectores</h1>
+            <div class="sector-manager-content"></div>
+        </div>
+    </div>
+
+    <!-- Profile View -->
+    <div class="profile-view" style="display: none;">
+        <div class="container">
+            <h1>Mi Perfil</h1>
+            <div class="profile-content">
+                <div class="profile-header">
+                    <div class="profile-image">
+                        <img src="src/assets/img/default-profile.png" alt="Foto de perfil" id="profile-image">
+                        <button class="btn btn-secondary change-photo-btn">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="profile-name">Nombre de Usuario</h2>
+                        <p id="profile-email">usuario@email.com</p>
+                    </div>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-mountain"></i>
+                        <span class="stat-value" id="boulders-completed">0</span>
+                        <span class="stat-label">Boulders Completados</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-star"></i>
+                        <span class="stat-value" id="max-grade">V0</span>
+                        <span class="stat-label">Grado Máximo</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="stat-value" id="member-since">2024</span>
+                        <span class="stat-label">Miembro desde</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

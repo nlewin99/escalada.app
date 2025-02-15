@@ -1,9 +1,10 @@
 import { AuthService } from '../utils/AuthService.js';
 
 export class BoulderForm {
-    constructor(db, storage) {
+    constructor(db, storage, onUpdateCallback) {
         this.db = db;
         this.storage = storage;
+        this.onUpdateCallback = onUpdateCallback;
         this.container = null;
         this.currentBoulder = null;
         this.onSuccess = null;
@@ -177,80 +178,7 @@ export class BoulderForm {
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!AuthService.getCurrentUser()) {
-                this.showError('Debes iniciar sesión para realizar esta acción.');
-                return;
-            }
-
-            const nombre = form.querySelector('#nombre').value.trim();
-            const sectorId = form.querySelector('#sector').value;
-            const grado = form.querySelector('#grado').value;
-            const latitud = form.querySelector('#latitud').value ? parseFloat(form.querySelector('#latitud').value) : null;
-            const longitud = form.querySelector('#longitud').value ? parseFloat(form.querySelector('#longitud').value) : null;
-            const imagen = imageInput.files[0];
-
-            if (!nombre || !sectorId || !grado) {
-                this.showError('El nombre, sector y grado son obligatorios.');
-                return;
-            }
-
-            try {
-                const loadingOverlay = document.getElementById('loading-overlay');
-                if (loadingOverlay) {
-                    loadingOverlay.classList.add('visible');
-                }
-
-                let imagenUrl = this.currentBoulder?.imagenUrl;
-
-                if (imagen) {
-                    // Subir nueva imagen si se seleccionó una
-                    const imageRef = this.storage.ref(`boulders/${Date.now()}_${imagen.name}`);
-                    await imageRef.put(imagen);
-                    imagenUrl = await imageRef.getDownloadURL();
-                }
-
-                const boulderData = {
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                // Solo incluir campos que han cambiado
-                if (nombre !== this.originalValues?.nombre) boulderData.nombre = nombre;
-                if (sectorId !== this.originalValues?.sectorId) boulderData.sectorId = sectorId;
-                if (grado !== this.originalValues?.grado) boulderData.grado = grado;
-                if (latitud !== this.originalValues?.latitud) boulderData.latitud = latitud;
-                if (longitud !== this.originalValues?.longitud) boulderData.longitud = longitud;
-                if (imagenUrl !== this.originalValues?.imagenUrl) boulderData.imagenUrl = imagenUrl;
-
-                if (this.currentBoulder) {
-                    // Actualizar boulder existente
-                    await this.db.collection('boulders').doc(this.currentBoulder.id).update(boulderData);
-                } else {
-                    // Crear nuevo boulder
-                    boulderData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                    // Para nuevo boulder, incluir campos obligatorios
-                    boulderData.nombre = nombre;
-                    boulderData.sectorId = sectorId;
-                    boulderData.grado = grado;
-                    // Incluir ubicación e imagen solo si están presentes
-                    if (latitud && longitud) {
-                        boulderData.latitud = latitud;
-                        boulderData.longitud = longitud;
-                    }
-                    if (imagenUrl) boulderData.imagenUrl = imagenUrl;
-                    await this.db.collection('boulders').add(boulderData);
-                }
-
-                this.hide();
-                if (this.onSuccess) this.onSuccess();
-            } catch (error) {
-                console.error('Error al guardar el boulder:', error);
-                this.showError('Error al guardar los cambios. Por favor, intenta de nuevo.');
-            } finally {
-                const loadingOverlay = document.getElementById('loading-overlay');
-                if (loadingOverlay) {
-                    loadingOverlay.classList.remove('visible');
-                }
-            }
+            await this.handleSubmit(e);
         });
 
         // Configurar el botón de cerrar
@@ -528,5 +456,77 @@ export class BoulderForm {
 
     setOnSuccess(callback) {
         this.onSuccess = callback;
+    }
+
+    async handleSubmit(e) {
+        e.preventDefault();
+        if (!AuthService.getCurrentUser()) {
+            this.showError('Debes iniciar sesión para realizar esta acción.');
+            return;
+        }
+
+        const form = e.target;
+        const nombre = form.querySelector('#nombre').value.trim();
+        const sectorId = form.querySelector('#sector').value;
+        const grado = form.querySelector('#grado').value;
+        const latitud = form.querySelector('#latitud').value ? parseFloat(form.querySelector('#latitud').value) : null;
+        const longitud = form.querySelector('#longitud').value ? parseFloat(form.querySelector('#longitud').value) : null;
+        const imagen = form.querySelector('#imagen').files[0];
+
+        if (!nombre || !sectorId || !grado) {
+            this.showError('El nombre, sector y grado son obligatorios.');
+            return;
+        }
+
+        try {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) loadingOverlay.classList.add('visible');
+
+            let imagenUrl = this.currentBoulder?.imagenUrl;
+            if (imagen) {
+                const imageRef = this.storage.ref(`boulders/${Date.now()}_${imagen.name}`);
+                await imageRef.put(imagen);
+                imagenUrl = await imageRef.getDownloadURL();
+            }
+
+            const boulderData = {
+                nombre,
+                sectorId,
+                grado,
+                latitud,
+                longitud,
+                imagenUrl,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            // Actualización optimista
+            const optimisticUpdate = {
+                ...boulderData,
+                id: this.currentBoulder?.id || Date.now().toString(),
+                createdAt: this.currentBoulder?.createdAt || new Date()
+            };
+
+            // Notificar la actualización optimista
+            if (this.onUpdateCallback) {
+                this.onUpdateCallback(optimisticUpdate, true);
+            }
+
+            if (this.currentBoulder) {
+                await this.db.collection('boulders').doc(this.currentBoulder.id).update(boulderData);
+            } else {
+                boulderData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                await this.db.collection('boulders').add(boulderData);
+            }
+
+            this.hide();
+            if (loadingOverlay) loadingOverlay.classList.remove('visible');
+        } catch (error) {
+            console.error('Error al guardar boulder:', error);
+            this.showError('Error al guardar los cambios. Por favor, intenta de nuevo.');
+            // Notificar el error para revertir la actualización optimista
+            if (this.onUpdateCallback) {
+                this.onUpdateCallback(null, false);
+            }
+        }
     }
 } 

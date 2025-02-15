@@ -7,6 +7,9 @@ export class BouldersView {
     constructor(db, storage) {
         this.db = db;
         this.storage = storage;
+        this.container = document.querySelector('#boulders-container');
+        this.boulders = [];
+        this.unsubscribe = null;
         this.allBoulders = [];
         this.sectorSelect = document.getElementById('sector-select');
         this.gradeSelect = document.getElementById('grade-select');
@@ -20,10 +23,7 @@ export class BouldersView {
     }
 
     init() {
-        document.body.appendChild(this.boulderForm.getElement());
-        this.boulderForm.setOnSuccess(() => this.loadBoulders(this.sectorSelect.value));
-        this.loadSectors();
-        this.loadBoulders();
+        this.setupRealTimeUpdates();
         this.setupEventListeners();
         this.setupAuthListener();
     }
@@ -54,6 +54,53 @@ export class BouldersView {
             addButton.innerHTML = '<i class="fas fa-plus"></i> Nuevo Boulder';
             addButton.onclick = () => this.boulderForm.show();
             this.actionsContainer.appendChild(addButton);
+        }
+    }
+
+    setupRealTimeUpdates() {
+        // Cancelar suscripción anterior si existe
+        if (this.unsubscribe) {
+            this.unsubscribe();
+        }
+
+        // Configurar escucha en tiempo real
+        this.unsubscribe = this.db.collection('boulders')
+            .orderBy('createdAt', 'desc')
+            .onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    const boulder = { id: change.doc.id, ...change.doc.data() };
+                    
+                    if (change.type === 'added') {
+                        this.boulders.unshift(boulder);
+                    } else if (change.type === 'modified') {
+                        const index = this.boulders.findIndex(b => b.id === boulder.id);
+                        if (index !== -1) {
+                            this.boulders[index] = boulder;
+                        }
+                    } else if (change.type === 'removed') {
+                        const index = this.boulders.findIndex(b => b.id === boulder.id);
+                        if (index !== -1) {
+                            this.boulders.splice(index, 1);
+                        }
+                    }
+                });
+                
+                this.renderBoulders();
+            });
+    }
+
+    handleOptimisticUpdate(boulder, isSuccess) {
+        if (isSuccess) {
+            const index = this.boulders.findIndex(b => b.id === boulder.id);
+            if (index !== -1) {
+                this.boulders[index] = boulder;
+            } else {
+                this.boulders.unshift(boulder);
+            }
+            this.renderBoulders();
+        } else {
+            // Revertir cambios optimistas si hay error
+            this.setupRealTimeUpdates();
         }
     }
 
@@ -190,5 +237,11 @@ export class BouldersView {
             );
             this.bouldersContainer.appendChild(boulderCard.render());
         });
+    }
+
+    showBoulderForm(boulder = null) {
+        const form = new BoulderForm(this.db, this.storage, 
+            (updatedBoulder, isSuccess) => this.handleOptimisticUpdate(updatedBoulder, isSuccess));
+        form.show(boulder);
     }
 } 
